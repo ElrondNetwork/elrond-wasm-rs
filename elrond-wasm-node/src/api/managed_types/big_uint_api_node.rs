@@ -1,5 +1,5 @@
 use crate::error_hook;
-use super::unsafe_buffer;
+use crate::unsafe_buffer;
 
 use core::cmp::Ordering;
 use core::ops::{Add, Div, Mul, Rem, Sub};

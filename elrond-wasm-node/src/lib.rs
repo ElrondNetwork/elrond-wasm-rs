@@ -3,6 +3,7 @@
 
 pub mod api;
 pub mod error_hook;
+mod unsafe_buffer;
 
 #[macro_use]
 extern crate alloc;

@@ -1,4 +1,4 @@
-use super::big_uint_api_mock::*;
+use super::managed_types::*;
 use crate::async_data::AsyncCallTxData;
 use crate::{SendBalance, TxContext, TxOutput, TxPanic};
 use elrond_wasm::api::{ContractHookApi, SendApi, StorageReadApi, StorageWriteApi};

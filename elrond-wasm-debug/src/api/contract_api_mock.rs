@@ -1,5 +1,4 @@
-use super::big_int_api_mock::*;
-use super::big_uint_api_mock::*;
+use super::managed_types::*;
 use crate::TxContext;
 use elrond_wasm::{
 	api::BigUintApi,

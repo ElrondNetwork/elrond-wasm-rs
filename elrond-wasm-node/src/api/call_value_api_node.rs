@@ -1,4 +1,4 @@
-use super::ArwenBigUint;
+use super::managed_types::ArwenBigUint;
 use crate::ArwenApiImpl;
 use elrond_wasm::api::CallValueApi;
 use elrond_wasm::types::{BoxedBytes, EsdtTokenType, TokenIdentifier};
