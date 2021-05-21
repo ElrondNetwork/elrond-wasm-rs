@@ -6,6 +6,8 @@ use alloc::string::String;
 use alloc::vec::Vec;
 use core::fmt::Debug;
 
+const LENGTH_IN_BYTES: usize = 32;
+
 /// An Address is just a H256 with a different name.
 /// Has a different ABI name than H256.
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
@@ -32,30 +34,30 @@ impl<'a> From<&'a Address> for &'a H256 {
 	}
 }
 
-impl From<[u8; 32]> for Address {
+impl From<[u8; LENGTH_IN_BYTES]> for Address {
 	#[inline]
-	fn from(arr: [u8; 32]) -> Self {
+	fn from(arr: [u8; LENGTH_IN_BYTES]) -> Self {
 		Address(H256::from(arr))
 	}
 }
 
-impl<'a> From<&'a [u8; 32]> for Address {
+impl<'a> From<&'a [u8; LENGTH_IN_BYTES]> for Address {
 	#[inline]
-	fn from(bytes: &'a [u8; 32]) -> Self {
+	fn from(bytes: &'a [u8; LENGTH_IN_BYTES]) -> Self {
 		Address(H256::from(bytes))
 	}
 }
 
-impl<'a> From<&'a mut [u8; 32]> for Address {
+impl<'a> From<&'a mut [u8; LENGTH_IN_BYTES]> for Address {
 	#[inline]
-	fn from(bytes: &'a mut [u8; 32]) -> Self {
+	fn from(bytes: &'a mut [u8; LENGTH_IN_BYTES]) -> Self {
 		Address(H256::from(bytes))
 	}
 }
 
-impl From<Box<[u8; 32]>> for Address {
+impl From<Box<[u8; LENGTH_IN_BYTES]>> for Address {
 	#[inline]
-	fn from(bytes: Box<[u8; 32]>) -> Self {
+	fn from(bytes: Box<[u8; LENGTH_IN_BYTES]>) -> Self {
 		Address(H256::from(bytes))
 	}
 }
@@ -66,7 +68,7 @@ impl Address {
 	}
 }
 
-impl From<Address> for [u8; 32] {
+impl From<Address> for [u8; LENGTH_IN_BYTES] {
 	#[inline]
 	fn from(addr: Address) -> Self {
 		addr.0.into()
@@ -108,7 +110,7 @@ impl Address {
 	}
 
 	#[inline]
-	pub fn copy_to_array(&self, target: &mut [u8; 32]) {
+	pub fn copy_to_array(&self, target: &mut [u8; LENGTH_IN_BYTES]) {
 		self.0.copy_to_array(target)
 	}
 
@@ -213,27 +215,27 @@ impl TypeAbi for Address {
 mod address_tests {
 	use super::*;
 	use alloc::vec::Vec;
-	use elrond_codec::test_util::{check_top_encode, ser_deser_ok};
+	use elrond_codec::test_util::{check_top_encode, check_top_decode, ser_deser_ok};
 
 	#[test]
 	fn test_address() {
-		let addr = Address::from([4u8; 32]);
-		ser_deser_ok(addr, &[4u8; 32]);
+		let addr = Address::from([4u8; LENGTH_IN_BYTES]);
+		ser_deser_ok(addr, &[4u8; LENGTH_IN_BYTES]);
 	}
 
 	#[test]
 	fn test_opt_address() {
-		let addr = Address::from([4u8; 32]);
+		let addr = Address::from([4u8; LENGTH_IN_BYTES]);
 		let mut expected: Vec<u8> = Vec::new();
 		expected.push(1u8);
-		expected.extend_from_slice(&[4u8; 32]);
+		expected.extend_from_slice(&[4u8; LENGTH_IN_BYTES]);
 		ser_deser_ok(Some(addr), expected.as_slice());
 	}
 
 	#[test]
 	fn test_ser_address_ref() {
-		let addr = Address::from([4u8; 32]);
-		let expected_bytes: &[u8] = &[4u8; 32 * 3];
+		let addr = Address::from([4u8; LENGTH_IN_BYTES]);
+		let expected_bytes: &[u8] = &[4u8; LENGTH_IN_BYTES * 3];
 
 		let tuple = (&addr, &&&addr, addr.clone());
 		let serialized_bytes = check_top_encode(&tuple);
@@ -250,5 +252,11 @@ mod address_tests {
 		use core::mem::size_of;
 		assert_eq!(size_of::<Address>(), size_of::<usize>());
 		assert_eq!(size_of::<Option<Address>>(), size_of::<usize>());
+	}
+
+	#[test]
+	fn test_decode_from_empty() {
+		let decoded = check_top_decode::<Address>(&[]);
+		assert!(decoded.is_zero());
 	}
 }

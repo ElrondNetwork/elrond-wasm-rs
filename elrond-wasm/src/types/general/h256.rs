@@ -5,27 +5,29 @@ use alloc::string::String;
 use alloc::vec::Vec;
 use core::fmt::Debug;
 
+const LENGTH_IN_BYTES: usize = 32;
+
 const ERR_BAD_H256_LENGTH: &[u8] = b"bad H256 length";
-const ZERO_32: &[u8] = &[0u8; 32];
+const ZERO_32: &[u8] = &[0u8; LENGTH_IN_BYTES];
 
 /// Type that holds 32 bytes of data.
 /// Data is kept on the heap to keep wasm size low and avoid copies.
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
-pub struct H256(Box<[u8; 32]>);
+pub struct H256(Box<[u8; LENGTH_IN_BYTES]>);
 
-impl From<[u8; 32]> for H256 {
+impl From<[u8; LENGTH_IN_BYTES]> for H256 {
 	/// Constructs a hash type from the given bytes array of fixed length.
 	///
 	/// # Note
 	///
 	/// The given bytes are interpreted in big endian order.
 	#[inline]
-	fn from(arr: [u8; 32]) -> Self {
+	fn from(arr: [u8; LENGTH_IN_BYTES]) -> Self {
 		H256(Box::new(arr))
 	}
 }
 
-impl<'a> From<&'a [u8; 32]> for H256 {
+impl<'a> From<&'a [u8; LENGTH_IN_BYTES]> for H256 {
 	/// Constructs a hash type from the given reference
 	/// to the bytes array of fixed length.
 	///
@@ -33,12 +35,12 @@ impl<'a> From<&'a [u8; 32]> for H256 {
 	///
 	/// The given bytes are interpreted in big endian order.
 	#[inline]
-	fn from(bytes: &'a [u8; 32]) -> Self {
+	fn from(bytes: &'a [u8; LENGTH_IN_BYTES]) -> Self {
 		H256(Box::new(*bytes))
 	}
 }
 
-impl<'a> From<&'a mut [u8; 32]> for H256 {
+impl<'a> From<&'a mut [u8; LENGTH_IN_BYTES]> for H256 {
 	/// Constructs a hash type from the given reference
 	/// to the mutable bytes array of fixed length.
 	///
@@ -46,14 +48,14 @@ impl<'a> From<&'a mut [u8; 32]> for H256 {
 	///
 	/// The given bytes are interpreted in big endian order.
 	#[inline]
-	fn from(bytes: &'a mut [u8; 32]) -> Self {
+	fn from(bytes: &'a mut [u8; LENGTH_IN_BYTES]) -> Self {
 		H256(Box::new(*bytes))
 	}
 }
 
-impl From<Box<[u8; 32]>> for H256 {
+impl From<Box<[u8; LENGTH_IN_BYTES]>> for H256 {
 	#[inline]
-	fn from(bytes: Box<[u8; 32]>) -> Self {
+	fn from(bytes: Box<[u8; LENGTH_IN_BYTES]>) -> Self {
 		H256(bytes)
 	}
 }
@@ -61,8 +63,8 @@ impl From<Box<[u8; 32]>> for H256 {
 impl H256 {
 	pub fn from_slice(slice: &[u8]) -> Self {
 		let mut i = 0;
-		let mut arr = [0u8; 32];
-		while i < 32 && i < slice.len() {
+		let mut arr = [0u8; LENGTH_IN_BYTES];
+		while i < LENGTH_IN_BYTES && i < slice.len() {
 			arr[i] = slice[i];
 			i += 1;
 		}
@@ -70,7 +72,7 @@ impl H256 {
 	}
 }
 
-impl From<H256> for [u8; 32] {
+impl From<H256> for [u8; LENGTH_IN_BYTES] {
 	#[inline]
 	fn from(s: H256) -> Self {
 		*(s.0)
@@ -98,7 +100,7 @@ impl H256 {
 	pub fn zero() -> Self {
 		use alloc::alloc::{alloc_zeroed, Layout};
 		unsafe {
-			let ptr = alloc_zeroed(Layout::new::<[u8; 32]>()) as *mut [u8; 32];
+			let ptr = alloc_zeroed(Layout::new::<[u8; LENGTH_IN_BYTES]>()) as *mut [u8; LENGTH_IN_BYTES];
 			H256(Box::from_raw(ptr))
 		}
 	}
@@ -106,7 +108,7 @@ impl H256 {
 	/// Returns the size of this hash in bytes.
 	#[inline]
 	pub fn len_bytes() -> usize {
-		32
+		LENGTH_IN_BYTES
 	}
 
 	/// Extracts a byte slice containing the entire fixed hash.
@@ -116,7 +118,7 @@ impl H256 {
 	}
 
 	#[inline]
-	pub fn copy_to_array(&self, target: &mut [u8; 32]) {
+	pub fn copy_to_array(&self, target: &mut [u8; LENGTH_IN_BYTES]) {
 		target.copy_from_slice(&self.0[..]);
 	}
 
@@ -149,7 +151,7 @@ impl H256 {
 	pub fn into_boxed_bytes(self) -> BoxedBytes {
 		let raw = Box::into_raw(self.0) as *mut u8;
 		unsafe {
-			let bytes_box = Box::<[u8]>::from_raw(core::slice::from_raw_parts_mut(raw, 32));
+			let bytes_box = Box::<[u8]>::from_raw(core::slice::from_raw_parts_mut(raw, LENGTH_IN_BYTES));
 			bytes_box.into()
 		}
 	}
@@ -216,18 +218,22 @@ impl H256 {
 		c: ExitCtx,
 		exit: fn(ExitCtx, DecodeError) -> !,
 	) -> Self {
-		if input.len() != 32 {
+		if input.len() != LENGTH_IN_BYTES {
 			exit(c, DecodeError::from(ERR_BAD_H256_LENGTH));
 		}
 		let raw = Box::into_raw(input);
-		let array_box = unsafe { Box::<[u8; 32]>::from_raw(raw as *mut [u8; 32]) };
+		let array_box = unsafe { Box::<[u8; LENGTH_IN_BYTES]>::from_raw(raw as *mut [u8; LENGTH_IN_BYTES]) };
 		H256(array_box)
 	}
 }
 
 impl TopDecode for H256 {
 	fn top_decode<I: TopDecodeInput>(input: I) -> Result<Self, DecodeError> {
-		match <[u8; 32]>::top_decode_boxed(input) {
+		if input.byte_len() == 0 {
+			return Ok(H256::zero())
+		}
+
+		match <[u8; LENGTH_IN_BYTES]>::top_decode_boxed(input) {
 			Ok(array_box) => Ok(H256(array_box)),
 			Err(_) => Err(DecodeError::from(ERR_BAD_H256_LENGTH)),
 		}
@@ -238,6 +244,10 @@ impl TopDecode for H256 {
 		c: ExitCtx,
 		exit: fn(ExitCtx, DecodeError) -> !,
 	) -> Self {
+		if input.byte_len() == 0 {
+			return H256::zero();
+		}
+
 		H256::decode_from_boxed_bytes_or_exit(input.into_boxed_slice_u8(), c, exit)
 	}
 }
@@ -252,27 +262,27 @@ impl TypeAbi for H256 {
 mod h256_tests {
 	use super::*;
 	use alloc::vec::Vec;
-	use elrond_codec::test_util::{check_top_encode, ser_deser_ok};
+	use elrond_codec::test_util::{check_top_decode, check_top_encode, ser_deser_ok};
 
 	#[test]
 	fn test_h256_from_array() {
-		let addr = H256::from([4u8; 32]);
-		ser_deser_ok(addr, &[4u8; 32]);
+		let addr = H256::from([4u8; LENGTH_IN_BYTES]);
+		ser_deser_ok(addr, &[4u8; LENGTH_IN_BYTES]);
 	}
 
 	#[test]
 	fn test_opt_h256() {
-		let addr = H256::from([4u8; 32]);
+		let addr = H256::from([4u8; LENGTH_IN_BYTES]);
 		let mut expected: Vec<u8> = Vec::new();
 		expected.push(1u8);
-		expected.extend_from_slice(&[4u8; 32]);
+		expected.extend_from_slice(&[4u8; LENGTH_IN_BYTES]);
 		ser_deser_ok(Some(addr), expected.as_slice());
 	}
 
 	#[test]
 	fn test_ser_h256_ref() {
-		let addr = H256::from([4u8; 32]);
-		let expected_bytes: &[u8] = &[4u8; 32 * 3];
+		let addr = H256::from([4u8; LENGTH_IN_BYTES]);
+		let expected_bytes: &[u8] = &[4u8; LENGTH_IN_BYTES * 3];
 
 		let tuple = (&addr, &&&addr, addr.clone());
 		let serialized_bytes = check_top_encode(&tuple);
@@ -297,5 +307,11 @@ mod h256_tests {
 		let h256 = H256::from(array);
 		let bb = h256.into_boxed_bytes();
 		assert_eq!(bb.as_slice(), &array[..]);
+	}
+
+	#[test]
+	fn test_decode_from_empty() {
+		let decoded = check_top_decode::<H256>(&[]);
+		assert!(decoded.is_zero());
 	}
 }
