@@ -1,4 +1,4 @@
-name: Builds and tests
+name: Check framework and contracts
 
 on:
   push:

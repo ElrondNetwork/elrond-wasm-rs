@@ -1,0 +1,23 @@
+name: Check elrond-wasm-node
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  clippy_check:
+    name: Clippy linter check for elrond-wasm-node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            components: clippy
+            default: true
+      - uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --manifest-path ./elrond-wasm-node/Cargo.toml
