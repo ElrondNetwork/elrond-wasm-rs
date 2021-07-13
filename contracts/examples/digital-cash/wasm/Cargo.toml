@@ -1,0 +1,30 @@
+[package]
+name = "digital-cash-wasm"
+version = "0.0.0"
+authors = ["Valentin Craciun"]
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = [ "cdylib",]
+
+[workspace]
+members = [ ".",]
+
+[dev-dependencies]
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+
+[dependencies.digital-cash]
+features = [ "wasm-output-mode",]
+default-features = false
+path = ".."
+
+[dependencies.elrond-wasm-output]
+version = "0.13.0"
+features = [ "wasm-output-mode",]

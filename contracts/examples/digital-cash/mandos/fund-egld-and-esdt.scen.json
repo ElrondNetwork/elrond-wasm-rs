@@ -1,0 +1,141 @@
+{
+    "name": "fund and withdraw",
+    "steps": [{
+            "step": "externalSteps",
+            "path": "set-accounts.json"
+        },
+        {
+            "step": "scCall",
+            "txId": "fund",
+            "tx": {
+                "from": "address:acc1",
+                "to": "address:the_digital_cash_contract",
+                "value": "1,000,000",
+                "function": "fund",
+                "arguments": [
+                    "0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a",
+                    "100"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": ""
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {
+                        "''deposit|0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a": {
+                            "1-amount": "u32:3|1000000",
+                            "2-depositor_address": "address:acc1",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:4|str:EGLD"
+                        }
+                    },
+                    "code": "file:../output/mycontract2.wasm"
+
+                },
+                "address:acc1": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "100"
+                    }
+                },
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "fund-2",
+            "tx": {
+                "from": "address:acc2",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "esdtTokenName": "str:CashToken",
+                "esdtValue": "50",
+                "function": "fund",
+                "arguments": [
+                    "0xe868c2baab2a20b612f1351da5945c52c60f5321c6cde572149db90c9e8fbfc8",
+                    "100"
+                ],
+                "gasLimit": "100,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "",
+                "gas": "*",
+                "refund": "*",
+                "message": ""
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "esdt": {
+                        "''CashToken": "50"
+                    },
+                    "storage": {
+                        "''deposit|0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a": {
+                            "1-amount": "u32:3|1000000",
+                            "2-depositor_address": "address:acc1",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:4|str:EGLD"
+                        },
+                        "''deposit|0xe868c2baab2a20b612f1351da5945c52c60f5321c6cde572149db90c9e8fbfc8": {
+                            "1-amount": "u32:1|50",
+                            "2-depositor_address": "address:acc2",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:9|str:CashToken"
+                        }
+                    },
+                    "code": "file:../output/mycontract2.wasm"
+
+                },
+                "address:acc1": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "1",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "50"
+                    }
+                },
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+
+            }
+        }
+
+    ]
+}

@@ -1,0 +1,183 @@
+{
+    "name": "withdraw-egld",
+    "steps": [{
+            "step": "externalSteps",
+            "path": "fund-egld-and-esdt.scen.json"
+        },
+        {
+            "step": "setState",
+            "comment": "set block",
+            "currentBlockInfo": {
+                "blockTimestamp": "511",
+                "blockNonce": "15",
+                "blockRound": "15",
+                "blockEpoch": "0"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "withdraw-esdt-1",
+            "tx": {
+                "from": "address:acc1",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "withdraw",
+                "arguments": [
+                    "0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "4",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": "str:withdrawal has not been available yet"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "esdt": {
+                        "''CashToken": "50"
+                    },
+                    "storage": {
+                        "''deposit|0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a": {
+                            "1-amount": "u32:3|1000000",
+                            "2-depositor_address": "address:acc1",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:4|str:EGLD"
+                        },
+                        "''deposit|0xe868c2baab2a20b612f1351da5945c52c60f5321c6cde572149db90c9e8fbfc8": {
+                            "1-amount": "u32:1|50",
+                            "2-depositor_address": "address:acc2",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:9|str:CashToken"
+                        }
+                    },
+                    "code": "file:../output/mycontract2.wasm"
+
+                },
+                "address:acc1": {
+                    "nonce": "2",
+                    "balance": "0",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "1",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "50"
+                    }
+                },
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "withdraw-egld-2",
+            "tx": {
+                "from": "address:acc1",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "withdraw",
+                "arguments": [
+                    "0x558fd9b0dd9fed2d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "4",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": "str:non-existent key"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "set block",
+            "currentBlockInfo": {
+                "blockTimestamp": "511",
+                "blockNonce": "300",
+                "blockRound": "300",
+                "blockEpoch": "1"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "withdraw-egld-3",
+            "tx": {
+                "from": "address:acc1",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "withdraw",
+                "arguments": [
+                    "0x558fd9b0dd9fed3d3bed883d3b92907743362c56b9728392f84b261f1cc5ae0a"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": ""
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "''CashToken": "50"
+                    },
+                    "storage": {
+                        "''deposit|0xe868c2baab2a20b612f1351da5945c52c60f5321c6cde572149db90c9e8fbfc8": {
+                            "1-amount": "u32:1|50",
+                            "2-depositor_address": "address:acc2",
+                            "3-expiration_round": "u64:16",
+                            "4-token_name": "u32:9|str:CashToken"
+                        }
+                    },
+                    "code": "file:../output/mycontract2.wasm"
+
+                },
+                "address:acc1": {
+                    "nonce": "4",
+                    "balance": "1,000,000",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "1",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "50"
+                    }
+                },
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+            }
+        }
+
+
+    ]
+}

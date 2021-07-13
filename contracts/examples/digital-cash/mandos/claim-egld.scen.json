@@ -1,0 +1,249 @@
+{
+    "name": "claim-egld",
+    "steps": [{
+            "step": "externalSteps",
+            "path": "set-accounts.json"
+        },
+        {
+            "step": "setState",
+            "comment": "set block",
+            "currentBlockInfo": {
+                "blockTimestamp": "511",
+                "blockNonce": "5",
+                "blockRound": "555",
+                "blockEpoch": "1"
+            }
+        },
+        {
+            "step": "setState",
+            "accounts": {
+                "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {}
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "fund",
+            "tx": {
+                "from": "address:acc1",
+                "to": "address:the_digital_cash_contract",
+                "value": "5",
+                "function": "fund",
+                "arguments": [
+                    "0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d91",
+                    "605"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": ""
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "5",
+                    "storage": {
+                        "''deposit|0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d91": {
+                            "1-amount": "u32:1|5",
+                            "2-depositor_address": "address:acc1",
+                            "3-expiration_round": "u64:100",
+                            "4-token_name": "u32:4|str:EGLD"
+                        }
+                    },
+                    "code": "file:../output/mycontract2.wasm"
+
+
+                },
+                "address:acc1": {
+                    "nonce": "1",
+                    "balance": "999,995",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "100"
+                    }
+                },
+
+                "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {}
+                },
+
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim2",
+            "tx": {
+                "from": "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "claim",
+                "arguments": [
+                    "0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d81",
+                    "0xf638006f25df5fc9e24ab265e90326b5edf29189608384ff3a3d47104ae7debb3a0867698680f0b78a73833ceb395932427956bc2427669e8c48ef01e7c37705"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "4",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": "str:non-existent key"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "set block",
+            "currentBlockInfo": {
+                "blockTimestamp": "511",
+                "blockNonce": "1555",
+                "blockRound": "1555",
+                "blockEpoch": "1"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim3",
+            "tx": {
+                "from": "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "claim",
+                "arguments": [
+                    "0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d91",
+                    "0xf638006f25df5fc9e24ab265e90326b5edf29189608384ff3a3d47104ae7debb3a0867698680f0b78a73833ceb395932427956bc2427669e8c48ef01e7c37705"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "4",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": "str:deposit expired"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "set block",
+            "currentBlockInfo": {
+                "blockTimestamp": "511",
+                "blockNonce": "12",
+                "blockRound": "12",
+                "blockEpoch": "1"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim4",
+            "tx": {
+                "from": "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "claim",
+                "arguments": [
+                    "0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d91",
+                    "0xf638006f25ddf5fc9e24ab265e90326b5edf29189608384ff3a3d47104ae7debb3a0867698680f0b78a73833ceb395932427956bc2427669e8c48ef01e7c37705"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "4",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": "str:invalid signature"
+            }
+        },
+        {
+            "step": "scCall",
+            "txId": "claim5",
+            "tx": {
+                "from": "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915",
+                "to": "address:the_digital_cash_contract",
+                "value": "0",
+                "function": "claim",
+                "arguments": [
+                    "0xdfc7efc43c36853ab160e783ad65766043734e30ce46188a448c44e2bbab9d91",
+                    "0xf638006f25df5fc9e24ab265e90326b5edf29189608384ff3a3d47104ae7debb3a0867698680f0b78a73833ceb395932427956bc2427669e8c48ef01e7c37705"
+                ],
+                "gasLimit": "500,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*",
+                "logs": "*",
+                "message": ""
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:the_digital_cash_contract": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {},
+                    "code": "file:../output/mycontract2.wasm"
+
+
+                },
+                "address:acc1": {
+                    "nonce": "1",
+                    "balance": "999,995",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "100"
+                    }
+                },
+
+                "0xebfd923cd251f857ed7639e87143ac83f12f423827abc4a0cdde0119c3e37915": {
+                    "nonce": "4",
+                    "balance": "1,000,005",
+                    "storage": {}
+                },
+
+                "address:digital_cash_owner_address": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "storage": {}
+                }
+
+            }
+        }
+
+    ]
+}

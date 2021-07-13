@@ -1,0 +1,50 @@
+{
+    "name": "set initial accounts",
+    "steps": [{
+            "step": "setState",
+            "accounts": {
+                "address:acc1": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {}
+                },
+                "address:acc2": {
+                    "nonce": "0",
+                    "balance": "1,000,000",
+                    "storage": {},
+                    "esdt": {
+                        "str:CashToken": "100"
+                    }
+                },
+                "address:digital_cash_owner_address": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {}
+                }
+            },
+            "newAddresses": [{
+                "creatorAddress": "address:digital_cash_owner_address",
+                "creatorNonce": "0",
+                "newAddress": "address:the_digital_cash_contract"
+            }]
+
+        },
+        {
+            "step": "scDeploy",
+            "txId": "deploy",
+            "tx": {
+                "from": "address:digital_cash_owner_address",
+                "contractCode": "file:../output/mycontract2.wasm",
+                "value": "0",
+                "arguments": [],
+                "gasLimit": "5,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*"
+            }
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+[package]
+name = "digital-cash"
+version = "0.0.0"
+authors = [ "Valentin Craciun"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = [ "elrond-wasm-node",]
+
+[dependencies.elrond-wasm]
+version = "0.14.0"
+
+[dependencies.elrond-wasm-derive]
+version = "0.14.0"
+
+[dependencies.elrond-wasm-node]
+version = "0.14.0"
+optional = true
+
+[dev-dependencies.elrond-wasm-debug]
+version = "0.14.0"
+
+
