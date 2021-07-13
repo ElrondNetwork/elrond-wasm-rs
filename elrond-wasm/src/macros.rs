@@ -11,7 +11,7 @@ macro_rules! imports {
 		use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
 		use elrond_wasm::api::{
 			BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractBase, CryptoApi,
-			ProxyObjApi, SendApi,
+			EllipticCurveApi, ProxyObjApi, SendApi,
 		};
 		use elrond_wasm::api::{ErrorApi, LogApi}; // TODO: remove at some point, they shouldn't be public
 		use elrond_wasm::elrond_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};

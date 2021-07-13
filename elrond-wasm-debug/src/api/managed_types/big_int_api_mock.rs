@@ -5,7 +5,7 @@ use core::ops::{Add, Div, Mul, Neg, Rem, Sub};
 use core::ops::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
 use elrond_wasm::api::BigIntApi;
 use num_bigint::{BigInt, Sign};
-use num_traits::sign::Signed;
+use num_traits::{pow::*, sign::Signed};
 use std::fmt;
 
 #[derive(Debug)]
@@ -257,6 +257,10 @@ impl elrond_wasm::api::BigIntApi for RustBigInt {
 		bi.into()
 	}
 
+	fn pow(&self, exp: u32) -> Self {
+		RustBigInt(pow(self.0.clone(), exp as usize))
+    }
+    
 	fn to_i64(&self) -> Option<i64> {
 		let (sign, digits) = self.0.to_u64_digits();
 		match sign {

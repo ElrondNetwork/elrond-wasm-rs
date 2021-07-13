@@ -1,4 +1,4 @@
-use super::big_uint_api_mock::*;
+use super::RustBigUint;
 use crate::{TxContext, TxPanic};
 use elrond_wasm::api::CallValueApi;
 use elrond_wasm::err_msg;

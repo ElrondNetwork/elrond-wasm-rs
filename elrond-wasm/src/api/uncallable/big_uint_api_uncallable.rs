@@ -295,6 +295,18 @@ impl BigUintApi for BigUintUncallable {
 		unreachable!()
 	}
 
+	fn sqrt(&self) -> Self {
+		unreachable!()
+	}
+
+	fn pow(&self, _exp: u32) -> Self {
+		unreachable!()
+	}
+
+	fn log2(&self) -> u32 {
+        unreachable!()
+	}
+    
 	fn to_u64(&self) -> Option<u64> {
 		unreachable!()
 	}

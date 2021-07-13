@@ -1,4 +1,4 @@
-use super::{big_uint_api_mock::*, RustBigInt};
+use super::{EllipticCurveMock, RustBigInt, RustBigUint};
 use crate::async_data::AsyncCallTxData;
 use crate::{SendBalance, TxContext, TxOutput, TxPanic};
 use elrond_wasm::api::{BlockchainApi, ContractBase, SendApi, StorageReadApi, StorageWriteApi};
@@ -52,6 +52,7 @@ impl TxContext {
 impl SendApi for TxContext {
 	type AmountType = RustBigUint;
 	type ProxyBigInt = RustBigInt;
+	type ProxyEllipticCurve = EllipticCurveMock;
 	type ProxyStorage = Self;
 
 	fn get_sc_address(&self) -> Address {

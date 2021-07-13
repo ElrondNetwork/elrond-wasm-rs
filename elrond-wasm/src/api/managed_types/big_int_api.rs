@@ -54,6 +54,8 @@ pub trait BigIntApi:
 
 	fn from_signed_bytes_be(bytes: &[u8]) -> Self;
 
+	fn pow(&self, exp: u32) -> Self;
+    
 	/// Will return `None` if the number is too big or too small to be converted.
 	fn to_i64(&self) -> Option<i64>;
 }

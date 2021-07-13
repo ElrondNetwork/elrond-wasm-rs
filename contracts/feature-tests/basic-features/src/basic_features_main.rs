@@ -9,6 +9,7 @@ pub mod block_info_features;
 pub mod blockchain_api_features;
 pub mod crypto_features;
 pub mod echo;
+pub mod elliptic_curve_features;
 pub mod event_features;
 pub mod macros;
 pub mod storage_direct_load;
@@ -26,6 +27,7 @@ pub mod types;
 pub trait BasicFeatures:
 	big_int_methods::BigIntMethods
 	+ big_int_operators::BigIntOperators
+	+ elliptic_curve_features::EllipticCurveFeatures
 	+ block_info_features::BlockInfoFeatures
 	+ blockchain_api_features::BlockchainApiFeatures
 	+ crypto_features::CryptoFeatures

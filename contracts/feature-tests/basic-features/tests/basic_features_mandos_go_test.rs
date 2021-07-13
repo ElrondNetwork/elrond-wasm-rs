@@ -292,3 +292,18 @@ fn storage_usize_bad_go() {
 fn storage_vec_u8_go() {
 	elrond_wasm_debug::mandos_go("mandos/storage_vec_u8.scen.json");
 }
+
+#[test]
+fn sqrt() {
+	elrond_wasm_debug::mandos_go("mandos/sqrt.scen.json");
+}
+
+#[test]
+fn log2() {
+	elrond_wasm_debug::mandos_go("mandos/log2_func.scen.json");
+}
+
+#[test]
+fn pow() {
+	elrond_wasm_debug::mandos_go("mandos/pow_func.scen.json");
+}

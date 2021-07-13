@@ -6,6 +6,7 @@ use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
 use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
 use elrond_wasm::api::BigUintApi;
 use num_bigint::{BigInt, BigUint, Sign};
+use num_traits::pow;
 use std::fmt;
 
 #[derive(Debug)]
@@ -360,6 +361,18 @@ impl elrond_wasm::api::BigUintApi for RustBigUint {
 		bi.into()
 	}
 
+	fn sqrt(&self) -> Self {
+		RustBigUint(self.0.sqrt())
+	}
+
+	fn pow(&self, exp: u32) -> Self {
+		RustBigUint(pow(self.0.clone(), exp as usize))
+	}
+
+	fn log2(&self) -> u32 {
+		(self.0.bits() as u32) - 1
+    }
+    
 	fn to_u64(&self) -> Option<u64> {
 		let (_, digits) = self.0.to_u64_digits();
 		match digits.len() {

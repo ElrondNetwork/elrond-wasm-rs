@@ -1,6 +1,7 @@
 use super::{
-	BigIntApi, BigUintApi, BlockchainApi, CallValueApi, CryptoApi, EndpointArgumentApi,
-	EndpointFinishApi, ErrorApi, LogApi, ProxyObjApi, SendApi, StorageReadApi, StorageWriteApi,
+	BigIntApi, BigUintApi, BlockchainApi, CallValueApi, CryptoApi, EllipticCurveApi,
+	EndpointArgumentApi, EndpointFinishApi, ErrorApi, LogApi, ProxyObjApi, SendApi, StorageReadApi,
+	StorageWriteApi,
 };
 use crate::types::Address;
 
@@ -15,6 +16,8 @@ pub trait ContractBase: Sized {
 
 	type BigInt: BigIntApi + 'static;
 
+	type EllipticCurve: EllipticCurveApi<BigUint = Self::BigUint> + 'static;
+
 	/// Abstracts the lower-level storage functionality.
 	type Storage: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static;
 
@@ -25,13 +28,14 @@ pub trait ContractBase: Sized {
 	type SendApi: SendApi<
 			AmountType = Self::BigUint,
 			ProxyBigInt = Self::BigInt,
+			ProxyEllipticCurve = Self::EllipticCurve,
 			ProxyStorage = Self::Storage,
 		> + Clone
 		+ 'static;
 
 	type BlockchainApi: BlockchainApi<BalanceType = Self::BigUint> + Clone + 'static;
 
-	type CryptoApi: CryptoApi + Clone + 'static;
+	type CryptoApi: CryptoApi<BigUint = Self::BigUint> + Clone + 'static;
 
 	type LogApi: LogApi + ErrorApi + Clone + 'static;
 

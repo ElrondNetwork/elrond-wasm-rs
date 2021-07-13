@@ -223,6 +223,10 @@ impl BigIntApi for BigIntUncallable {
 		unreachable!()
 	}
 
+	fn pow(&self, _exp: u32) -> Self {
+        unreachable!()
+	}
+    
 	fn to_i64(&self) -> Option<i64> {
 		unreachable!()
 	}

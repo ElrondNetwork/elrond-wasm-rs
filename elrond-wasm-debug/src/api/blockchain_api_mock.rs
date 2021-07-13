@@ -1,4 +1,4 @@
-use super::big_uint_api_mock::*;
+use super::managed_types::RustBigUint;
 use crate::TxContext;
 use elrond_wasm::{
 	api::BigUintApi,

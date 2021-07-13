@@ -1,5 +1,4 @@
-use super::big_int_api_mock::*;
-use super::big_uint_api_mock::*;
+use super::{EllipticCurveMock, RustBigInt, RustBigUint};
 use crate::TxContext;
 
 impl elrond_wasm::api::ContractBase for TxContext {
@@ -12,6 +11,7 @@ impl elrond_wasm::api::ContractBase for TxContext {
 	type CryptoApi = Self;
 	type LogApi = Self;
 	type ErrorApi = Self;
+	type EllipticCurve = EllipticCurveMock;
 
 	fn get_storage_raw(&self) -> Self::Storage {
 		self.clone()

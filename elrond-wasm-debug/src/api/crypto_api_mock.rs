@@ -1,3 +1,4 @@
+use crate::api::RustBigUint;
 use crate::TxContext;
 use elrond_wasm::api::CryptoApi;
 use elrond_wasm::types::H256;
@@ -5,6 +6,8 @@ use sha2::Sha256;
 use sha3::{Digest, Keccak256};
 
 impl CryptoApi for TxContext {
+	type BigUint = RustBigUint;
+
 	fn sha256(&self, data: &[u8]) -> H256 {
 		let mut hasher = Sha256::new();
 		hasher.update(data);
