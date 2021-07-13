@@ -1,6 +1,7 @@
 #![no_std]
 
 mod call_async;
+mod call_programmed;
 mod call_sync;
 mod call_transf_exec;
 mod contract_change_owner;
@@ -19,6 +20,7 @@ elrond_wasm::imports!();
 pub trait Forwarder:
 	call_sync::ForwarderSyncCallModule
 	+ call_async::ForwarderAsyncCallModule
+	+ call_programmed::ForwarderProgrammedCallModule
 	+ call_transf_exec::ForwarderTransferExecuteModule
 	+ contract_change_owner::ChangeOwnerModule
 	+ contract_deploy::DeployContractModule

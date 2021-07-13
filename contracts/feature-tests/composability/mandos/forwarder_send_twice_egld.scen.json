@@ -37,7 +37,7 @@
                     "str:EGLD",
                     "1"
                 ],
-                "gasLimit": "70,000,000",
+                "gasLimit": "80,000,000",
                 "gasPrice": "0"
             },
             "expect": {
