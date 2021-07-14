@@ -144,7 +144,7 @@ impl SendApi for super::UncallableApi {
 		_gas: u64,
 		_function: &[u8],
 		_arg_buffer: &ArgBuffer,
-	) {
+	) -> Vec<BoxedBytes> {
 		unreachable!()
 	}
 }

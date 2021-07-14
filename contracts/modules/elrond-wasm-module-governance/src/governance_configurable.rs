@@ -1,5 +1,6 @@
 elrond_wasm::imports!();
 
+#[allow(clippy::too_many_arguments)]
 #[elrond_wasm_derive::module]
 pub trait GovernanceConfigurablePropertiesModule {
 	// endpoints - owner-only
@@ -145,7 +146,10 @@ pub trait GovernanceConfigurablePropertiesModule {
 	}
 
 	fn try_change_voting_period_in_blocks(&self, new_value: u64) -> SCResult<()> {
-		require!(new_value != 0, "Voting period (in blocks) can't be set to 0");
+		require!(
+			new_value != 0,
+			"Voting period (in blocks) can't be set to 0"
+		);
 
 		self.voting_period_in_blocks().set(&new_value);
 

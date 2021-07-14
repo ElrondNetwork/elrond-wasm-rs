@@ -1,4 +1,4 @@
-use elrond_codec::TopEncode;
+use elrond_codec::{TopDecode, TopEncode};
 
 use super::{BigIntApi, BigUintApi, ErrorApi, StorageReadApi, StorageWriteApi};
 use crate::{
@@ -240,7 +240,12 @@ pub trait SendApi: ErrorApi + Clone + Sized {
 	/// Allows synchronously calling a local function by name. Execution is resumed afterwards.
 	/// You should never have to call this function directly.
 	/// Use the other specific methods instead.
-	fn call_local_esdt_built_in_function(&self, gas: u64, function: &[u8], arg_buffer: &ArgBuffer);
+	fn call_local_esdt_built_in_function(
+		&self,
+		gas: u64,
+		function: &[u8],
+		arg_buffer: &ArgBuffer,
+	) -> Vec<BoxedBytes>;
 
 	/// Allows synchronous minting of ESDT/SFT (depending on nonce). Execution is resumed afterwards.
 	/// Note that the SC must have the ESDTLocalMint or ESDTNftAddQuantity roles set,
@@ -262,7 +267,7 @@ pub trait SendApi: ErrorApi + Clone + Sized {
 
 		arg_buffer.push_argument_bytes(amount.to_bytes_be().as_slice());
 
-		self.call_local_esdt_built_in_function(self.get_gas_left(), func_name, &arg_buffer);
+		let _ = self.call_local_esdt_built_in_function(self.get_gas_left(), func_name, &arg_buffer);
 	}
 
 	/// Allows synchronous burning of ESDT/SFT/NFT (depending on nonce). Execution is resumed afterwards.
@@ -283,13 +288,14 @@ pub trait SendApi: ErrorApi + Clone + Sized {
 
 		arg_buffer.push_argument_bytes(amount.to_bytes_be().as_slice());
 
-		self.call_local_esdt_built_in_function(self.get_gas_left(), func_name, &arg_buffer);
+		let _ = self.call_local_esdt_built_in_function(self.get_gas_left(), func_name, &arg_buffer);
 	}
 
 	/// Creates a new NFT token of a certain type (determined by `token_identifier`).  
 	/// `attributes` can be any serializable custom struct.  
 	/// This is a built-in function, so the smart contract execution is resumed after.
 	/// Must have ESDTNftCreate role set, or this will fail with "action is not allowed".
+	/// Returns the nonce of the newly created NFT.
 	#[allow(clippy::too_many_arguments)]
 	fn esdt_nft_create<T: elrond_codec::TopEncode>(
 		&self,
@@ -300,7 +306,7 @@ pub trait SendApi: ErrorApi + Clone + Sized {
 		hash: &BoxedBytes,
 		attributes: &T,
 		uris: &[BoxedBytes],
-	) {
+	) -> u64 {
 		let mut arg_buffer = ArgBuffer::new();
 		arg_buffer.push_argument_bytes(token.as_esdt_identifier());
 		arg_buffer.push_argument_bytes(amount.to_bytes_be().as_slice());
@@ -321,6 +327,12 @@ pub trait SendApi: ErrorApi + Clone + Sized {
 			arg_buffer.push_argument_bytes(top_encoded_uri.as_slice());
 		}
 
-		self.call_local_esdt_built_in_function(self.get_gas_left(), b"ESDTNFTCreate", &arg_buffer);
+		let output = self.call_local_esdt_built_in_function(
+			self.get_gas_left(),
+			b"ESDTNFTCreate",
+			&arg_buffer,
+		);
+
+		u64::top_decode(output[0].as_slice()).unwrap_or_default()
 	}
 }

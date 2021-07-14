@@ -11,6 +11,7 @@ pub struct Color {
 	b: u8,
 }
 
+#[allow(clippy::too_many_arguments)]
 #[elrond_wasm_derive::module]
 pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 	#[view]
@@ -85,7 +86,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 		color: Color,
 		uri: BoxedBytes,
 	) -> u64 {
-		self.send().esdt_nft_create::<Color>(
+		let token_nonce = self.send().esdt_nft_create::<Color>(
 			&token_identifier,
 			&amount,
 			&name,
@@ -94,10 +95,6 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 			&color,
 			&[uri],
 		);
-
-		let token_nonce = self
-			.blockchain()
-			.get_current_esdt_nft_nonce(&self.blockchain().get_sc_address(), &token_identifier);
 
 		self.create_event(&token_identifier, token_nonce, &amount);
 
@@ -187,8 +184,13 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 			uri,
 		);
 
-		self.send()
-			.direct(&to, &token_identifier, token_nonce, &amount, b"NFT transfer");
+		self.send().direct(
+			&to,
+			&token_identifier,
+			token_nonce,
+			&amount,
+			b"NFT transfer",
+		);
 
 		self.send_event(&to, &token_identifier, token_nonce, &amount);
 	}
