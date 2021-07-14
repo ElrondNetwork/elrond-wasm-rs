@@ -1,7 +1,7 @@
 use crate::types::BoxedBytes;
 use alloc::string::String;
 use alloc::vec::Vec;
-use elrond_codec::EncodeError;
+use elrond_codec::{DecodeError, EncodeError};
 
 /// Contains a smart contract execution error message.
 ///
@@ -57,6 +57,13 @@ impl From<Vec<u8>> for SCError {
 impl From<EncodeError> for SCError {
 	#[inline]
 	fn from(err: EncodeError) -> Self {
+		SCError::from(err.message_bytes())
+	}
+}
+
+impl From<DecodeError> for SCError {
+	#[inline]
+	fn from(err: DecodeError) -> Self {
 		SCError::from(err.message_bytes())
 	}
 }

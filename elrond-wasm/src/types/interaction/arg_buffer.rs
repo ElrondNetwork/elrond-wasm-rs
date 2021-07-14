@@ -84,6 +84,15 @@ impl Default for ArgBuffer {
 	}
 }
 
+impl Clone for ArgBuffer {
+	fn clone(&self) -> Self {
+		Self {
+			arg_lengths: self.arg_lengths.clone(),
+			arg_data: self.arg_data.clone(),
+		}
+	}
+}
+
 impl TopEncodeOutput for &mut ArgBuffer {
 	fn set_slice_u8(self, bytes: &[u8]) {
 		self.arg_lengths.push(bytes.len());

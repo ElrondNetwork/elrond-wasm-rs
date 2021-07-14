@@ -150,3 +150,35 @@ impl<T> From<SCResult<T>> for Result<T, SCError> {
 		}
 	}
 }
+
+impl<T, Err> From<Result<T, Err>> for SCResult<T>
+where
+	Err: Into<SCError>,
+{
+	fn from(result: Result<T, Err>) -> Self {
+		match result {
+			Result::Ok(ok) => SCResult::Ok(ok),
+			Result::Err(err) => SCResult::Err(err.into()),
+		}
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use elrond_codec::DecodeError;
+
+use super::*;
+
+	#[test]
+	fn test_result_to_sc_result() {
+		let result_ok: Result<i32, DecodeError> = Result::Ok(5);
+		let sc_result_ok: SCResult<i32> = result_ok.into();
+
+		assert!(sc_result_ok.unwrap() == 5);
+
+		let result_err: Result<i32, DecodeError> = Result::Err(DecodeError::from(&b"Decode Error"[..]).into());
+		let sc_result_err: SCResult<i32> = result_err.into();
+
+		assert!(sc_result_err.err().unwrap().as_bytes() == &b"Decode Error"[..]);
+	}
+}
