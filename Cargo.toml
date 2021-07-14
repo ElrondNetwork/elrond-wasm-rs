@@ -11,6 +11,8 @@ members = [
 
   "contracts/examples/adder",
   "contracts/examples/adder/abi",
+  "contracts/examples/bonding-curve",
+  "contracts/examples/bonding-curve/abi",
   "contracts/examples/crowdfunding-erc20",
   "contracts/examples/crowdfunding-erc20/abi",
   "contracts/examples/crowdfunding-esdt",

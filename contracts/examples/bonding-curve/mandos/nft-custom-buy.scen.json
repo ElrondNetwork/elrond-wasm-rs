@@ -1,0 +1,201 @@
+{
+    "name": "buy nfts first success + second fail",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "nft-custom-create.scen.json"
+        },
+        {
+            "step": "scCall",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:bonding-curve",
+                "value": "0",
+                "esdt": {
+                    "value": "50",
+                    "tokenIdentifier": "str:EGLD-12345"
+                },
+                "function": "buyToken",
+                "arguments": [
+                    "1",
+                    "str:MFNFT-67890",
+                    "1"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "status": "0",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "196"
+                        },
+                        "str:BAD-77777": {
+                            "balance": "100"
+                        },
+                        "str:MFNFT-67890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                }
+                            ]
+                        }
+                    },
+                    "storage": {}
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "str:MFNFT-67890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "0",
+                                    "creator": "sc:bonding-curve"
+                                },
+                                {
+                                    "nonce": "2",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                },
+                                {
+                                    "nonce": "3",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                }
+                            ],
+                            "roles": [
+                                "ESDTRoleNFTCreate",
+                                "ESDTRoleNFTAddQuantity",
+                                "ESDTRoleNFTBurn"
+                            ],
+                            "lastNonce": "3"
+                        }
+                    },
+                    "storage": {
+                        "str:bonding_curve|nested:str:MFNFT-67890|u64:0": "u8:1|biguint:1|u8:0|biguint:3|biguint:3|biguint:2|nested:str:EGLD-12345|biguint:4",
+                        "str:token_details|nested:str:MFNFT-67890": "u8:1|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                },
+                "+": {}
+            }
+        },
+        {
+            "step": "scCall",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:bonding-curve",
+                "value": "0",
+                "esdt": {
+                    "value": "50",
+                    "tokenIdentifier": "str:EGLD-12345"
+                },
+                "function": "buyToken",
+                "arguments": [
+                    "1",
+                    "str:MFNFT-67890",
+                    "1"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "2",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "196"
+                        },
+                        "str:BAD-77777": {
+                            "balance": "100"
+                        },
+                        "str:MFNFT-67890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                }
+                            ]
+                        }
+                    },
+                    "storage": {}
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "str:MFNFT-67890": {
+                            "instances": [
+                                {
+                                    "nonce": "1",
+                                    "balance": "0",
+                                    "creator": "sc:bonding-curve"
+                                },
+                                {
+                                    "nonce": "2",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                },
+                                {
+                                    "nonce": "3",
+                                    "balance": "1",
+                                    "creator": "sc:bonding-curve"
+                                }
+                            ],
+                            "roles": [
+                                "ESDTRoleNFTCreate",
+                                "ESDTRoleNFTAddQuantity",
+                                "ESDTRoleNFTBurn"
+                            ],
+                            "lastNonce": "3"
+                        }
+                    },
+                    "storage": {
+                        "str:bonding_curve|nested:str:MFNFT-67890|u64:0": "u8:1|biguint:1|u8:0|biguint:3|biguint:3|biguint:2|nested:str:EGLD-12345|biguint:4",
+                        "str:token_details|nested:str:MFNFT-67890": "u8:1|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                },
+                "+": {}
+            }
+        },
+        {
+            "step": "scQuery",
+            "tx": {
+                "to": "sc:bonding-curve",
+                "function": "getTokenAvailability",
+                "arguments": [
+                    "str:MFNFT-67890"
+                ]
+            },
+            "expect": {
+                "out": [
+                    "0x",
+                    "0x02"
+                ],
+                "status": "",
+                "gas": "*",
+                "refund": "*"
+            }
+        }
+    ]
+}

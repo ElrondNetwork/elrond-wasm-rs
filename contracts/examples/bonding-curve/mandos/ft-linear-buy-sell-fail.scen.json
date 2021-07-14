@@ -1,0 +1,162 @@
+{
+    "name": "buy & sell fts fail",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "ft-linear-burn.scen.json"
+        },
+        {
+            "step": "scCall",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:bonding-curve",
+                "value": "0",
+                "esdt": {
+                    "tokenIdentifier": "str:EGLD-12345",
+                    "value": "50"
+                },
+                "function": "buyToken",
+                "arguments": [
+                    "10",
+                    "str:MFFT-12345"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "message": "str:The payment provided is not enough for the transaction",
+                "status": "4",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "1",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "200"
+                        },
+                        "str:MFFT-12345": {
+                            "balance": "0"
+                        }
+                    }
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "str:bonding_curve|nested:str:MFFT-12345|u64:0": "u8:0|biguint:1|biguint:1|u8:0|biguint:1000|biguint:300|biguint:300|nested:str:EGLD-12345|biguint:0",
+                        "str:token_details|nested:str:MFFT-12345": "u8:0|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                },
+                "+": {}
+            }
+        },
+        {
+            "step": "scCall",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:bonding-curve",
+                "value": "0",
+                "esdt": {
+                    "tokenIdentifier": "str:BAD-77777",
+                    "value": "50"
+                },
+                "function": "buyToken",
+                "arguments": [
+                    "10",
+                    "str:MFFT-12345"
+                ],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "message": "str:Only EGLD-12345 tokens accepted",
+                "status": "4",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "2",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "200"
+                        },
+                        "str:MFFT-12345": {
+                            "balance": "0"
+                        }
+                    }
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "str:bonding_curve|nested:str:MFFT-12345|u64:0": "u8:0|biguint:1|biguint:1|u8:0|biguint:1000|biguint:300|biguint:300|nested:str:EGLD-12345|biguint:0",
+                        "str:token_details|nested:str:MFFT-12345": "u8:0|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                },
+                "+": {}
+            }
+        },
+        {
+            "step": "scCall",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:bonding-curve",
+                "value": "0",
+                "esdt": {
+                    "tokenIdentifier": "str:BAD-77777",
+                    "nonce": "0",
+                    "value": "8"
+                },
+                "function": "sellToken",
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "message": "str:Token is not issued yet!",
+                "status": "4",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "3",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "200"
+                        },
+                        "str:MFFT-12345": {
+                            "balance": "0"
+                        }
+                    }
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "str:bonding_curve|nested:str:MFFT-12345|u64:0": "u8:0|biguint:1|biguint:1|u8:0|biguint:1000|biguint:300|biguint:300|nested:str:EGLD-12345|biguint:0",
+                        "str:token_details|nested:str:MFFT-12345": "u8:0|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                },
+                "+": {}
+            }
+        }
+    ]
+}

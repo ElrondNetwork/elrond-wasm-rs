@@ -1,0 +1,30 @@
+[package]
+name = "bonding-curve"
+version = "0.0.0"
+authors = ["Alin Cruceat <alin.cruceat@elrond.com>"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = ["elrond-wasm-node"]
+
+[dependencies.elrond-wasm]
+version = "0.17.4"
+path = "../../../elrond-wasm"
+
+[dependencies.elrond-wasm-derive]
+version = "0.17.4"
+path = "../../../elrond-wasm-derive"
+
+[dependencies.elrond-wasm-node]
+version = "0.17.4"
+path = "../../../elrond-wasm-node"
+optional = true
+
+[dev-dependencies.elrond-wasm-debug]
+version = "0.17.4"
+path = "../../../elrond-wasm-debug"
+

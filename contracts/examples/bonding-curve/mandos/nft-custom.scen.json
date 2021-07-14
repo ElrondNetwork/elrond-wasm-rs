@@ -1,0 +1,83 @@
+{
+    "name": "nft with price given by custom example function",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "deploy.scen.json"
+        },
+        {
+            "step": "setState",
+            "accounts": {
+                "address:owner": {
+                    "nonce": "1",
+                    "balance": "5,000,000,000,000,000,000",
+                    "storage": {}
+                },
+                "address:user": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "200"
+                        },
+                        "str:BAD-77777": {
+                            "balance": "100"
+                        }
+                    },
+                    "storage": {}
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "str:MFNFT-67890": {
+                            "balance": "0",
+                            "lastNonce": "0",
+                            "roles": [
+                                "ESDTRoleNFTCreate",
+                                "ESDTRoleNFTAddQuantity",
+                                "ESDTRoleNFTBurn"
+                            ]
+                        }
+                    },
+                    "storage": {
+                        "str:token_details|nested:str:MFNFT-67890": "u8:1|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm",
+                    "owner": "address:owner"
+                }
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:owner": {
+                    "nonce": "1",
+                    "balance": "5,000,000,000,000,000,000",
+                    "storage": {}
+                },
+                "address:user": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "esdt": {
+                        "str:EGLD-12345": {
+                            "balance": "200"
+                        },
+                        "str:BAD-77777": {
+                            "balance": "100"
+                        }
+                    },
+                    "storage": {}
+                },
+                "sc:bonding-curve": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "storage": {
+                        "str:token_details|nested:str:MFNFT-67890": "u8:1|sc:bonding-curve"
+                    },
+                    "code": "file:../output/bonding-curve.wasm"
+                }
+            }
+        }
+    ]
+}
